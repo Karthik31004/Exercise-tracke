@@ -9,21 +9,41 @@ const cors = require('cors')
 // our default array of dreams
 const mongoose = require('mongoose')
 
-mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , newUserTopology: true})
-
+mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true})
+mongoose.connection.on('connected' , () => {
+  console.log("Connected Successfully")
+})
 // make all the files in 'public' available
 // https://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
 app.use(express.urlencoded())
 app.use(cors())
+
+//Mongoose Schema 
+
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    minlength: 3
+  } , 
+  exercise: [{
+    description: {type: String, required: true} ,
+    duration: {type: Number , required: true} ,
+    date: {type: Number}
+  }]
+})
+
+const User= mongoose.model('User' , userSchema);
+
 // https://expressjs.com/en/starter/basic-routing.html
 app.get("/", (request, response) => {
   response.sendFile(__dirname + "/views/index.html");
 });
 
 app.post("/api/exercise/new-user" , (req, res) => {
-  const { username } = req.body;
-  res.json({username})
+  
 })
 
 // listen for requests :)
