@@ -32,14 +32,17 @@
             Add Exercise
           </h1>
           <pre>POST   /api/exercise/add   </pre>
-            <input type="text" name="userId" placeholder="username">
-            <input type="text" name="description" placeholder="username">
-            <input type="text" name="duration" placeholder="username">
-            <input type="text" name="date" placeholder="username">
+            <input type="text" name="userId" placeholder="userId">
+            <input type="text" name="description" placeholder="Description">
+            <input type="text" name="duration" placeholder="Duration">
+            <input type="text" name="date" placeholder="Date">
             <input type="submit">
         </div>
         
       </div>
+      <footer>
+        <strong>Get user's exercise Log :</strong> GET api/exercise/log/{userId}?[from]&[to]&[limit]
+      </footer>
     </div>
   </body>
 </html>

@@ -14,6 +14,7 @@
 .heading  {
   font-size: 30px;
   font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .forms {
@@ -37,4 +38,15 @@ pre {
   paddding: 5px;
   font-size: 18px;
   background-color: yellow;
+}
+
+input {
+  height: 25px;
+  padding-left: 5px;
+  font-size: 16px;
+}
+
+input[type=submit] {
+  background-color: lightgrey;
+  height: 30px;
 }
