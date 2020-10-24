@@ -9,14 +9,14 @@ const cors = require('cors')
 // our default array of dreams
 const mongoose = require('mongoose')
 
-mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true})
+mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true , useCreateIndex: true})
 mongoose.connection.on('connected' , () => {
   console.log("Connected Successfully")
 })
 // make all the files in 'public' available
 // https://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
-app.use(express.urlencoded())
+app.use(express.urlencoded({extended: false})) 
 app.use(cors())
 
 //Mongoose Schema 
