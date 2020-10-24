@@ -9,7 +9,32 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  min-height: 100vh;
 }
 .heading  {
-  font-size: 25px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.forms {
+  display: flex;
+}
+
+.form-container {
+  padding: 10px;
+  width: 400px;
+  height: auto;
+  background-color: lightgreen;
+  display:flex;
+  flex-direction: column;
+}
+
+.form-container , pre , input {
+  margin: 10px;
+}
+
+pre {
+  paddding: 5px;
+  font-size: 18px;
+  background-color: yellow;
 }
