@@ -73,6 +73,7 @@ app.post('/api/exercise/add' , (req , res) => {
     if(err)  {
       return res.json({error: "User Not found"})
     }
+    data.updateOne({})
   })
 })
 
