@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   }]
 })
 
-const User= mongoose.model('User' , userSchema);
+const User = mongoose.model('User' , userSchema);
 
 // https://expressjs.com/en/starter/basic-routing.html
 app.get("/", (request, response) => {
@@ -43,7 +43,37 @@ app.get("/", (request, response) => {
 });
 
 app.post("/api/exercise/new-user" , (req, res) => {
+  const { username } = req.body;
+  User.findOne({username} , (err , data) => {
+    if(err) {
+      return console.log('findOne() error')
+    }
+    if(data)  {
+      return res.json({error: "Username already exists"})
+    } 
+    else {
+      const user = new User({
+        username , 
+        exercise: []
+      })
+      
+      user.save()
+          .then(user => {
+        res.json({username: user.username , _id: user._id})
+      }).catch(err => { console.log('save error')})
+    }
+  })
+})
+
+app.post('/api/exercise/add' , (req , res) => {
   
+  const {userId, description, duration, date } = req.body
+  
+  User.findOne({_id: userId} , (err , data) => {
+    if(err)  {
+      return res.json({error: "User Not found"})
+    }
+  })
 })
 
 // listen for requests :)
