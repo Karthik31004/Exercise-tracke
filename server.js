@@ -71,7 +71,7 @@ app.post("/api/exercise/new-user" , (req, res) => {
 app.post('/api/exercise/add' , (req , res) => {
   
   const {userId, description, duration } = req.body
-  User.findOne({_id: userId} , (err , data) => {
+  User.findById(userId , 'username' ,{lean: true}, (err , data) => {
     if(err)  {
       return res.send(err)
     }
@@ -90,9 +90,10 @@ app.post('/api/exercise/add' , (req , res) => {
       exercise.save()
               .then(log => {
         res.json({
+          username: data.username,
           userId: log.userId ,
           description: log.description,
-          duration: log.description,
+          duration: log.duaration,
           date: log.date.toDateString()
         })
       })
