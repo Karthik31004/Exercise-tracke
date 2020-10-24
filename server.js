@@ -20,7 +20,7 @@ app.get("/", (request, response) => {
 
 app.post("/api.exercise/new-user" , (req, res) => {
   const username = req.body;
-  res.json({username})
+  res.send("Hello")
 })
 
 // listen for requests :)
