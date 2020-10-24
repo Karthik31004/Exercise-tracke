@@ -27,15 +27,18 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: 3
-  } , 
-  exercise: [{
+  }
+})
+
+
+const logSchema = new mongoose.Schema({
     description: {type: String, required: true} ,
     duration: {type: Number , required: true} ,
     date: {type: Number}
-  }]
 })
 
 const User = mongoose.model('User' , userSchema);
+const Exercise = mongoose.model('Exercise' , logSchema)
 
 // https://expressjs.com/en/starter/basic-routing.html
 app.get("/", (request, response) => {
@@ -71,9 +74,19 @@ app.post('/api/exercise/add' , (req , res) => {
   
   User.findOne({_id: userId} , (err , data) => {
     if(err)  {
-      return res.json({error: "User Not found"})
+      return res.send(err)
     }
-    data.updateOne({})
+    else if(!data) {
+      return res.json({error: "User Not Found"})
+    }
+    else {
+      const exercise = new Exercise({
+        description,
+        duration,
+        date
+      })
+    }
+    return res.json(data)
   })
 })
 
