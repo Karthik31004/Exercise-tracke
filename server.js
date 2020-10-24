@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
 const logSchema = new mongoose.Schema({
     description: {type: String, required: true} ,
     duration: {type: Number , required: true} ,
-    date: {type: Number}
+    date: {type: Date , default: Date.now()}
 })
 
 const User = mongoose.model('User' , userSchema);
@@ -70,8 +70,7 @@ app.post("/api/exercise/new-user" , (req, res) => {
 
 app.post('/api/exercise/add' , (req , res) => {
   
-  const {userId, description, duration, date } = req.body
-  
+  const {userId, description, duration } = req.body
   User.findOne({_id: userId} , (err , data) => {
     if(err)  {
       return res.send(err)
@@ -80,13 +79,25 @@ app.post('/api/exercise/add' , (req , res) => {
       return res.json({error: "User Not Found"})
     }
     else {
-      const exercise = new Exercise({
+      const entry = {
+        userId,
         description,
         duration,
-        date
+      }
+      if(req.body.date)   entry.date = req.body.date;
+      
+      const exercise = new Exercise(entry);
+      exercise.save()
+              .then(log => {
+        res.json({
+          userId: log.userId ,
+          description: log.description,
+          duration: log.description,
+          date: log.date.toDateString()
+        })
       })
+          .catch(err => { console.log( "error in exercise save")})
     }
-    return res.json(data)
   })
 })
 
