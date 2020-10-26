@@ -91,7 +91,7 @@ app.post('/api/exercise/add' , (req , res) => {
               .then(log => {
         res.json({
           username: data.username,
-          userId: exercise.userId ,
+          userI: data._id ,
           description: exercise.description,
           duration: exercise.duration,
           date: exercise.date.toDateString()
