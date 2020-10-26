@@ -115,11 +115,7 @@ app.get('/api/exercise/users', (req, res) => {
 
 app.get('/api/exercise/log' , (req , res) => {
   const { userId } = req.query;
-  User.find({_id: userId} , (err, user) => {
-    if(err) console.log(err)
-      if(!user) { res.json({message: "User not found"}) }
-      else {  res.json({message: "User founded"})  }
-  })
+  User.findById({userId}).then(user => { res.json({ username: user.username })})
 })
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
