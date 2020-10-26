@@ -91,7 +91,7 @@ app.post('/api/exercise/add' , (req , res) => {
               .then(log => {
         res.json({
           username: data.username,
-          userId: log.userId ,
+          userId: data.userId ,
           description: log.description,
           duration: log.duaration,
           date: log.date.toDateString()
@@ -102,10 +102,6 @@ app.post('/api/exercise/add' , (req , res) => {
   })
 })
 
-app.get('/api/exercise/log',(req, res) => {
-  const { userId } = req.query;
-  res.send(userId)
-})
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
