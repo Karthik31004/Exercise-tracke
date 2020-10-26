@@ -102,6 +102,25 @@ app.post('/api/exercise/add' , (req , res) => {
   })
 })
 
+app.get('/api/exercise/users', (req, res) => {
+   User.find({} , (err, data) => {
+     if(err) {
+       console.log(err)
+     }
+     else {
+       res.json(data)
+     }
+   })
+})
+
+app.get('/api/exercise/log' , (req , res ) => {
+  const { userId } = req.query;
+  const from = new Date(req.query.from)
+  const to = new Date(req.query.to)
+  
+  User.findById({userId} , (err, result))
+  res.send(userId)
+})
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
