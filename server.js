@@ -103,7 +103,7 @@ app.post('/api/exercise/add' , (req , res) => {
 })
 
 app.get('/api/exercise/users', (req, res) => {
-   User.find().populate('username')
+   User.find().populate({path: 'users' , select: 'username'})
        .then( user => { 
            res.json({users: user}) 
    })
