@@ -103,7 +103,10 @@ app.post('/api/exercise/add' , (req , res) => {
 })
 
 app.get('/api/exercise/users', (req, res) => {
-  res.send("Hi")
+   User.find().populate('username')
+       .then( user => { 
+           res.json({users: user}) 
+   })
 })
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
