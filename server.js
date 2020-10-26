@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User' , userSchema)
 const Exercise = mongoose.model('Exercise' , exerciseSchema)
 
-//api
+//api/exercise/new-user
 
 app.post('/api/exercise/new-user' , (req , res) => {
   const { username } = req.body;
@@ -50,10 +50,24 @@ app.post('/api/exercise/new-user' , (req , res) => {
           username
         })
         user.save().then(saved => { res.json({username: saved.username , _id: saved._id})})
-            .catch(err) => {res.json({error: err})}
+            .catch(err => { res.json({error: "User Already exists"})})
       }
   })
 })
+
+//api/exercise/add
+app.post('/api/exercise/add' , (req, res) => {
+  const {userId, description, duration, date} = req.body;
+    const exercise = new Exercise({
+      description ,
+      duration
+    });
+    if(date) {
+      exercise.date = new Date(date)
+    }
+    
+  })
+
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
