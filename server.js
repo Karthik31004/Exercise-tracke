@@ -44,15 +44,13 @@ app.post('/api/exercise/new-user' , (req , res) => {
     if(err) {
       console.log(err)
     }
-    if(data)  {
-      res.json({message: "User already exists"})
-    }
     else
       {
         const user = new User({
           username
         })
-        user.save().then(saved => { res.json({username: saved.username , _id: saved.})})
+        user.save().then(saved => { res.json({username: saved.username , _id: saved._id})})
+            .catch(err) => {res.json({error: err})}
       }
   })
 })
