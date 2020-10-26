@@ -115,8 +115,6 @@ app.get('/api/exercise/users', (req, res) => {
 
 app.get('/api/exercise/log' , (req , res) => {
   const { userId } = req.query;
-  const from = new Date(req.query.from)
-  const to = new Date(req.query.to)
   
   User.find({_id: userId} , (err ,data) => {
     if(err) {
@@ -125,8 +123,28 @@ app.get('/api/exercise/log' , (req , res) => {
     if(!data) {
       return res.json({error: "User was not found"})
     }
-    const username
-    return res.json({userId , username})
+    const msg = {_id: data._id , username: data.username}
+    const filter = {userId}
+    if(req.query.from)  {
+      const from = new Date(req.query,from);
+      if(isNaN(from.valueOf()))  {
+        filter.date({'$gt': from})
+        msg.from = from.toDateString();
+      }
+    }
+      if(req.query.to)  {
+      const to = new Date(req.query.to);
+      if(isNaN(to.valueOf()))  {
+        filter.date({'$gt': to})
+        msg.to = to.toDateString();
+      }
+    }
+    const field = 'description duration date'
+    const options = {sort: {date: -1}}
+    const query = Exercise.find(filter , field , options).lean();
+    if(req.query.limit) {
+      const limit = parseInt()
+    }
   })
 })
 // listen for requests :)
