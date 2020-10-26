@@ -30,8 +30,7 @@ let exerciseSchema = new mongoose.Schema({
 
 let userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true} ,
-  log: [exerciseSchema] , 
-  count: [Number]
+  log: [exerciseSchema]
 })
 
 let User = mongoose.model('User' , userSchema)
@@ -100,21 +99,23 @@ app.get('/api/exercise/log' , (req , res) => {
     }
     if(req.query.from || req.query.to)  {
       const {from , to} = req.query;
+      let fromDate = new Date(0)
+      let toDate = new Date()
       if(from)  {
-        const fromDate = new Date(from)
+         fromDate = new Date(from)
       }
       if(to)  {
-        const toDate() = new Date(to)
+         toDate = new Date(to)
       }
       
-      result.log = result.filter(item => {
+      result.log = result.log.filter(item => {
         let itemDate = new Date(item.date);
+        return (itemDate.getTime() >= fromDate.getTime() && itemDate.getTime <= toDate.getTime() )
       })
     }
-    else  {
+      result = result.toJSON()
       result['count'] = result.log.length;
       res.json(result)
-    }
   })
 })
 // listen for requests :)
