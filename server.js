@@ -113,13 +113,21 @@ app.get('/api/exercise/users', (req, res) => {
    })
 })
 
-app.get('/api/exercise/log' , (req , res ) => {
+app.get('/api/exercise/log' , (req , res) => {
   const { userId } = req.query;
   const from = new Date(req.query.from)
   const to = new Date(req.query.to)
   
-  User.findById({userId} , (err, result))
-  res.send(userId)
+  User.find({_id: userId} , (err ,data) => {
+    if(err) {
+      return console.log(err)
+    }
+    if(!data) {
+      return res.json({error: "User was not found"})
+    }
+    
+    Exercise.find({userId , date: {$lt: to != "Invalid "})
+  })
 })
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
