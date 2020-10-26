@@ -103,10 +103,19 @@ app.post('/api/exercise/add' , (req , res) => {
 })
 
 app.get('/api/exercise/users', (req, res) => {
-   User.find().populate({path: 'users' , select: 'username'})
-       .then( user => { 
-           res.json({users: user}) 
+   User.find({} , (err, data) => {
+     if(err) {
+       console.log(err)
+     }
+     else {
+       res.json(data)
+     }
    })
+})
+
+app.get('/api/exercise/log' , (req, res, next) => {
+  const to = req.query.to ? new Date(req.query.to) : new Date(2999,12,30);
+  cosn
 })
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
