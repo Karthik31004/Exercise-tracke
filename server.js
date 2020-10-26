@@ -115,7 +115,18 @@ app.get('/api/exercise/users', (req, res) => {
 
 app.get('/api/exercise/log' , (req, res, next) => {
   const to = req.query.to ? new Date(req.query.to) : new Date(2999,12,30);
-  cosn
+  const from = req.query.from ? new Date(req.query.from) : 0 ;
+  const limit = req.query.limit;
+  
+  Exercise.findOne({userId: req.query.userId , date: {$lt: to , $gt: from}} , (err , data) => {
+    if(err) return next(err);
+    let log = data.map(obj => { return({description: obj.description, date: obj.date, duration: obj.duration}) });
+    if(limit) {
+      res.json({username: data[0].username, _id: data[0]._id , count: limit , log: log.slice(0 , limit)})
+    } else  {
+      res.json({username: data[0].username, _id: data[0]._id , count: log.limit , log: log.slice(0 , limit)})
+    }
+  })
 })
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
