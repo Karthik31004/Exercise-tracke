@@ -113,7 +113,20 @@ app.get('/api/exercise/users', (req, res) => {
    })
 })
 
-
+app.get('/api/exercise/log' , (req , res) => {
+  const { userId } = req.query;
+  
+  User.find({_id: userId} , (err ,data) => {
+    if(err) {
+      return console.log(err)
+    }
+    if(!data) {
+      return res.json({error: "User was not found"})
+    }
+    const msg = {_id: data._id , username: data.username}
+    res.json(msg)
+  })
+})
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
