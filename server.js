@@ -1,9 +1,9 @@
 //Declaration Statements
 
-const express = require("express");
-const app = express();
-const cors = require('cors')
-const mongoose = require('mongoose')
+let express = require("express");
+let app = express();
+let cors = require('cors')
+let mongoose = require('mongoose')
 
 //Connecting to the database
 mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true , useCreateIndex: true , useFindAndModify: false})
@@ -22,31 +22,32 @@ app.get("/", (request, response) => {
 });
 
 //mongoose schema 
-const exerciseSchema = new mongoose.Schema({
+let exerciseSchema = new mongoose.Schema({
   description: {type: String, required: true} ,
   duration: {type: Number, required: true},
   date: {type: String}
 })
 
-const userSchema = new mongoose.Schema({
+let userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true} ,
-  log: [exerciseSchema]
+  log: [exerciseSchema] , 
+  count: [Number]
 })
 
-const User = mongoose.model('User' , userSchema)
-const Exercise = mongoose.model('Exercise' , exerciseSchema)
+let User = mongoose.model('User' , userSchema)
+let Exercise = mongoose.model('Exercise' , exerciseSchema)
 
 //api/exercise/new-user
 
 app.post('/api/exercise/new-user' , (req , res) => {
-  const { username } = req.body;
+  let { username } = req.body;
   User.find({username} , (err , data) => {
     if(err) {
       console.log(err)
     }
     else
       {
-        const user = new User({
+        let user = new User({
           username
         })
         user.save().then(saved => { res.json({username: saved.username , _id: saved._id})})
@@ -57,8 +58,8 @@ app.post('/api/exercise/new-user' , (req , res) => {
 
 //api/exercise/add
 app.post('/api/exercise/add' , (req, res) => {
-  const {userId, description, duration , date} = req.body;
-    const exercise = new Exercise({
+  let {userId, description, duration , date} = req.body;
+    let exercise = new Exercise({
       description ,
       duration: parseInt(duration),
       date: new Date().toDateString()
@@ -94,6 +95,22 @@ app.get('/api/exercise/log' , (req , res) => {
   User.findById(req.query.userId , (err , result) => {
     if(err)
       console.log(err)
+    if(req.query.limit)  {
+      result.log = result.log.slice(0 , req.query.limit)
+    }
+    if(req.query.from || req.query.to)  {
+      const {from , to} = req.query;
+      if(from)  {
+        const fromDate = new Date(from)
+      }
+      if(to)  {
+        const toDate() = new Date(to)
+      }
+      
+      result.log = result.filter(item => {
+        let itemDate = new Date(item.date);
+      })
+    }
     else  {
       result['count'] = result.log.length;
       res.json(result)
@@ -101,7 +118,7 @@ app.get('/api/exercise/log' , (req , res) => {
   })
 })
 // listen for requests :)
-const listener = app.listen(process.env.PORT, () => {
+let listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
