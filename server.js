@@ -6,7 +6,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 //Connecting to the database
-mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true , useCreateIndex: true})
+mongoose.connect(process.env.MONGO_URI , {useNewUrlParser: true , useUnifiedTopology: true , useCreateIndex: true , useFindAndModify: false})
 mongoose.connection.on('connected' , () => {
   console.log("Connected Successfully")
 })
@@ -68,7 +68,7 @@ app.post('/api/exercise/add' , (req, res) => {
     else  {
       exercise.date = new Date().toDateString();
     }
-    User.findOneAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
+    User.findByIdAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
       if(err)  {
         console.log(err)
       }
@@ -83,6 +83,15 @@ app.post('/api/exercise/add' , (req, res) => {
     }).catch(err => { console.log(err)})
   })
 
+app.get('/api/exercise/users' , (req , res => {
+  User.find({} , (err , users) => {
+    if(err) console.log(err)
+    else  {
+      res.json(users)
+    }
+  })
+})
+        )
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
