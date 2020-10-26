@@ -25,7 +25,7 @@ app.get("/", (request, response) => {
 const exerciseSchema = new mongoose.Schema({
   description: {type: String, required: true} ,
   duration: {type: Number, required: true},
-  date: {type: Date, default: Date.now()}
+  date: {type: String}
 })
 
 const userSchema = new mongoose.Schema({
@@ -57,15 +57,30 @@ app.post('/api/exercise/new-user' , (req , res) => {
 
 //api/exercise/add
 app.post('/api/exercise/add' , (req, res) => {
-  const {userId, description, duration, date} = req.body;
+  const {userId, description, duration , date} = req.body;
     const exercise = new Exercise({
       description ,
       duration
     });
     if(date) {
-      exercise.date = new Date(date)
+      exercise.date = new Date(date).toDateString();
     }
-    
+    else  {
+      exercise.date = new Date().toDateString();
+    }
+    User.findOneAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
+      if(err)  {
+        console.log(err)
+      }
+      let result = {};
+      result['_id'] = updated._id , 
+      result['username'] = updated.username;
+      result['description'] = exercise.description;
+      result['duration'] = exercise.duration;
+      result['date'] = exercise.date;
+      
+      res.json(result)
+    }).catch(err => { console.log(err)})
   })
 
 // listen for requests :)
