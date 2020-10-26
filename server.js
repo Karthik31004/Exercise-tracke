@@ -125,8 +125,8 @@ app.get('/api/exercise/log' , (req , res) => {
     if(!data) {
       return res.json({error: "User was not found"})
     }
-    
-    Exercise.find({userId , date: {$lt: to != "Invalid "})
+    const username
+    return res.json({userId , username})
   })
 })
 // listen for requests :)
