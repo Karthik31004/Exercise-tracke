@@ -112,41 +112,54 @@ app.get('/api/exercise/users', (req, res) => {
      }
    })
 })
-
-app.get('/api/exercise/log' , (req , res) => {
-  const { userId } = req.query;
+app.get('/api/exercise/log', (req, res, next) => {
+  console.log(req.query)
+  if (!req.query.userId) {
+    res.send({error: 'userId must be present'})
+  }
   
-  User.find({_id: userId} , (err ,data) => {
-    if(err) {
-      return console.log(err)
-    }
-    if(!data) {
-      return res.json({error: "User was not found"})
-    }
-    const msg = {_id: data._id , username: data.username}
-    const filter = {userId}
-    if(req.query.from)  {
-      const from = new Date(req.query,from);
-      if(isNaN(from.valueOf()))  {
-        filter.date({'$gt': from})
-        msg.from = from.toDateString();
-      }
-    }
-      if(req.query.to)  {
-      const to = new Date(req.query.to);
-      if(isNaN(to.valueOf()))  {
-        filter.date({'$gt': to})
-        msg.to = to.toDateString();
-      }
-    }
-    const field = 'description duration date'
-    const options = {sort: {date: -1}}
-    const query = Exercise.find(filter , field , options).lean();
-    if(req.query.limit) {
-      const limit = parseInt()
-    }
-  })
-})
+  const userId = req.query.userId
+  
+  let from = req.query.from;
+  let to = req.query.to;
+  let limit = req.query.limit;
+  
+  const limitOptions = {};
+    if (limit) limitOptions.limit = limit;
+      
+        if (from && to) {
+          Exercise.find({ $and: [ { userId:userId }, { date: {$gt: new Date(from)} }, { date: {$lt: new Date(to)} } ] } ).limit(parseInt(limit)).exec((err, exercises) => {
+            if (err) {
+              return res.send({error: err})
+            }
+            return res.send({results: exercises})
+          })
+        } else if (from) {
+          Exercise.find({ $and: [ { userId:userId }, { date: {$gt: new Date(from)} } ] } ).limit(parseInt(limit)).exec((err, exercises) => {
+            if (err) {
+              return res.send({error: err})
+            }
+            return res.send({results: exercises})
+          })
+       } else if (to) {
+         Exercise.find({ $and: [ { userId:userId }, { date: {$lt: new Date(to)} } ] } ).limit(parseInt(limit)).exec((err, exercises) => {
+            if (err) {
+              return res.send({error: err})
+            }
+            return res.send({results: exercises})
+          })
+       } else {
+         Exercise.find({ userId:userId } ).limit(parseInt(limit)).exec((err, exercises) => {
+            if (err) {
+              return res.send({error: err})
+            }
+            return res.send({results: exercises})
+          })
+       }
+      
+      
+  
+});
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
