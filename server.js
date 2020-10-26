@@ -60,13 +60,11 @@ app.post('/api/exercise/add' , (req, res) => {
   const {userId, description, duration , date} = req.body;
     const exercise = new Exercise({
       description ,
-      duration
+      duration: parseInt(duration),
+      date: new Date().toDateString()
     });
     if(date) {
       exercise.date = new Date(date).toDateString();
-    }
-    else  {
-      exercise.date = new Date().toDateString();
     }
     User.findByIdAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
       if(err)  {
@@ -83,15 +81,25 @@ app.post('/api/exercise/add' , (req, res) => {
     }).catch(err => { console.log(err)})
   })
 
-app.get('/api/exercise/users' , (req , res => {
+app.get('/api/exercise/users' , (req , res) => {
   User.find({} , (err , users) => {
-    if(err) console.log(err)
-    else  {
+    if(err)
+      console.log(err)
+    else
       res.json(users)
+  })
+})
+
+app.get('/api/exercise/log' , (req , res) => {
+  User.findById(req.query.userId , (err , result) => {
+    if(err)
+      console.log(err)
+    else  {
+      result['count'] = result.log.length;
+      res.json(result)
     }
   })
 })
-        )
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
