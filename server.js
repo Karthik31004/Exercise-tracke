@@ -102,10 +102,17 @@ app.get('/api/exercise/log', (req, res) => {
         if(to)  {
           toDate = new Date(to)
         }
-        if(limit)  {
+        
+        result.log = result.log.filter(data => { return data.date.getTime() >= fromDate.getTime() && data.date.getTime() <= toDate.getTime() });
+        
+      if(limit)  {
           limit = parseInt(limit)
+          result.log = result.log.slice(0 , limit)
         }
-      res.json(result)
+      var obj = result;
+      obj = obj.toJSON()
+      obj.count = result.log.length;
+      res.json(obj)
     }
     else  {
       res.json({error: "No User Found"})
