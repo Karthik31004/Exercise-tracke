@@ -101,7 +101,7 @@ app.get('/api/exercise/log' , (req , res) => {
       }
       
       let result = {} ,
-          fromDate = 0, toDate = new Date.now() , limit;
+          fromDate = 0, toDate = new Date.now();
       
       if(req.query.from || req.query.to || req.query.limit)  {
         if(req.query.from)  {
@@ -110,15 +110,14 @@ app.get('/api/exercise/log' , (req , res) => {
         if(req.query.to)  {
           toDate = new Date(req.query.to)
         }
-        if(req.query.limit)  {
-          limit = req.query.limit
-        }
       }
       result['_id'] = user._id ;
       result['_username'] = user.username;
       result['log'] = user.log.map(data => {
-        data.date
+        ((data.date.getTime() >= fromDate.getTime())) && ((data.date.getTime <= toDate.getTime()))
       })
+      result['count'] = user.log.length;
+      if(req.query.limit)
     })
   }
 })
