@@ -114,12 +114,12 @@ app.get('/api/exercise/log' , (req , res) => {
       result['_id'] = user._id ;
       result['_username'] = user.username;
       result['log'] = user.log.filter(data => {
-        (data.date.getTime() >= fromDate.getTime()) && (data.date.getTime() <= toDate.getTime())
+        return (data.date.getTime() >= fromDate.getTime()) && (data.date.getTime() <= toDate.getTime())
       })
-      result['count'] = user.log.length;
+      result['count'] = result.log.length;
       
       if(req.query.limit) {
-        let limit = req.query.limit;
+        let limit = parseInt(req.query.limit);
         result.log = result.log.slice(0 , limit)
       }
       res.json(result)
