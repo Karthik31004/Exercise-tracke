@@ -109,9 +109,11 @@ app.get('/api/exercise/log', (req, res) => {
           limit = parseInt(limit)
           result.log = result.log.slice(0 , limit)
         }
-      var obj = result;
-      obj = obj.toJSON()
+      var obj = {}
+      obj._id = result._id;
+      obj.username = result.username;
       obj.count = result.log.length;
+      obj.log = result.log;
       res.json(obj)
     }
     else  {
