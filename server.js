@@ -90,39 +90,14 @@ app.get('/api/exercise/users' , (req , res) => {
   })
 })
 
-app.get('/api/exercise/log' , (req , res) => {
-  if(!req.query.userId)  {
-    res.json({error: "UserId is must"})
-  }
-  else  {
-    User.findById(req.query.userId , (err , user) => {
-      if(err)  {
-        console.log(err)
-      }
-      
-      let result = {} ,
-          fromDate = new Date(0), 
-          toDate = new Date();
-      if(req.query.limit) {
-        let limit = parseInt(req.query.limit);
-        result.log = result.log.slice(0 , limit)
-      }
-      if(req.query.from || req.query.to)  {
-        if(req.query.from)  {
-          fromDate = new Date(req.query.from)
-        }
-        if(req.query.to)  {
-          toDate = new Date(req.query.to)
-        }
-        result['_id'] = user._id ;
-        result['_username'] = user.username;
-        result['log'] = user.log.filter(data => {
-          return (data.date.getTime() >= fromDate.getTime()) && (data.date.getTime() <= toDate.getTime())
-      })
+app.get('/api/exercise/log', (req, res) => {
+  
+  User.findById(req.query.userId, (error, result) => {
+    if(!error){
+       let fromDate = new Date(0) , toDate = new Date()
     }
-      res.json(result)   
-    })
-  }
+  })
+  
 })
 // listen for requests :)
 let listener = app.listen(process.env.PORT, () => {
