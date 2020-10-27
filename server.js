@@ -25,7 +25,7 @@ app.get("/", (request, response) => {
 let exerciseSchema = new mongoose.Schema({
   description: {type: String, required: true} ,
   duration: {type: Number, required: true},
-  date: {type: String}
+  date: {type: Date , default: Date.now() }
 })
 
 let userSchema = new mongoose.Schema({
@@ -61,17 +61,16 @@ app.post('/api/exercise/add' , (req, res) => {
     let exercise = new Exercise({
       description ,
       duration: parseInt(duration),
-      date: new Date().toDateString()
     });
     if(date) {
-      exercise.date = new Date(date).toDateString();
+      exercise.date = new Date(date);
     }
     User.findByIdAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
       if(err)  {
         console.log(err)
       }
       let result = {};
-      result['_id'] = updated._id , 
+      result['_id'] = userId , 
       result['username'] = updated.username;
       result['description'] = exercise.description;
       result['duration'] = exercise.duration;
