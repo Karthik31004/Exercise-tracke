@@ -94,9 +94,23 @@ app.get('/api/exercise/log', (req, res) => {
   
   User.findById(req.query.userId, (error, result) => {
     if(!error){
-       let fromDate = new Date(0) , toDate = new Date()
+      var { from , to , limit} = req.query;
+      var fromDate = new Date(0) , toDate = new Date() 
+        if(from)  {
+          fromDate = new Date(from)
+        }
+        if(to)  {
+          toDate = new Date(to)
+        }
+        if(limit)  {
+          limit = parseInt(limit)
+        }
+      res.json(result)
     }
-  })
+    else  {
+      res.json({error: "No User Found"})
+    }
+  }).catch(err => { res.json({error: "No user Found"})})
   
 })
 // listen for requests :)
