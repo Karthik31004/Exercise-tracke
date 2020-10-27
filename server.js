@@ -74,7 +74,7 @@ app.post('/api/exercise/add' , (req, res) => {
         username: updated.username ,
         description: exercise.description ,
         duration: exercise.duration , 
-        date: exercise.date.toString()
+        date: exercise.date.toDateString()
       }
       
       res.json(result)
