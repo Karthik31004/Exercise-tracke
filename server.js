@@ -60,7 +60,7 @@ app.post('/api/exercise/add' , (req, res) => {
   let {userId, description, duration , date} = req.body;
     let exercise = new Exercise({
       description ,
-      duration: parseInt(duration),
+      duration: parseInt(duration)
     });
     if(date) {
       exercise.date = new Date(date);
@@ -69,12 +69,13 @@ app.post('/api/exercise/add' , (req, res) => {
       if(err)  {
         console.log(err)
       }
-      let result = {};
-      result['_id'] = userId , 
-      result['username'] = updated.username;
-      result['description'] = exercise.description;
-      result['duration'] = exercise.duration;
-      result['date'] = exercise.date;
+      let result = {
+        _id:updated._id ,
+        username: updated.username ,
+        description: exercise.description ,
+        duration: exercise.duration , 
+        date: exercise.date.toString()
+      }
       
       res.json(result)
     }).catch(err => { console.log(err)})
