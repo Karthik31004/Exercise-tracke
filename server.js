@@ -65,7 +65,7 @@ app.post('/api/exercise/add' , (req, res) => {
     if(date) {
       exercise.date = new Date(date);
     }
-    User.findByIdAndUpdate(userId , {$push: {log: exercise}} , (err , updated) => {
+    User.findByIdAndUpdate(userId , {$push: {log: exercise}} ,{new: true}, (err , updated) => {
       if(err)  {
         console.log(err)
       }
@@ -103,27 +103,24 @@ app.get('/api/exercise/log' , (req , res) => {
       let result = {} ,
           fromDate = new Date(0), 
           toDate = new Date();
-      
-      if(req.query.from || req.query.to || req.query.limit)  {
+      if(req.query.limit) {
+        let limit = parseInt(req.query.limit);
+        result.log = result.log.slice(0 , limit)
+      }
+      if(req.query.from || req.query.to)  {
         if(req.query.from)  {
           fromDate = new Date(req.query.from)
         }
         if(req.query.to)  {
           toDate = new Date(req.query.to)
         }
-      }
-      result['_id'] = user._id ;
-      result['_username'] = user.username;
-      result['log'] = user.log.filter(data => {
-        return (data.date.getTime() >= fromDate.getTime()) && (data.date.getTime() <= toDate.getTime())
+        result['_id'] = user._id ;
+        result['_username'] = user.username;
+        result['log'] = user.log.filter(data => {
+          return (data.date.getTime() >= fromDate.getTime()) && (data.date.getTime() <= toDate.getTime())
       })
-      
-      if(req.query.limit) {
-        let limit = parseInt(req.query.limit);
-        result.log = result.log.slice(0 , limit)
-      }
-      result['count'] = result.log.length;
-      res.json(result)
+    }
+      res.json(result)   
     })
   }
 })
