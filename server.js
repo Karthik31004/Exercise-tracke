@@ -65,7 +65,7 @@ app.post('/api/exercise/add' , (req, res) => {
     if(date) {
       exercise.date = new Date(date);
     }
-    User.findByIdAndUpdate(userId , {$push: {log: exercise}} , {new: true} , (err , updated) => {
+    User.findByIdAndUpdate(userId , {$push: {log: exercise}} , (err , updated) => {
       if(err)  {
         console.log(err)
       }
@@ -91,32 +91,12 @@ app.get('/api/exercise/users' , (req , res) => {
 })
 
 app.get('/api/exercise/log' , (req , res) => {
-  User.findById(req.query.userId , (err , result) => {
-    if(err)
-      console.log(err)
-    if(req.query.limit)  {
-      result.log = result.log.slice(0 , req.query.limit)
-    }
-    if(req.query.from || req.query.to)  {
-      const {from , to} = req.query;
-      let fromDate = new Date(0)
-      let toDate = new Date()
-      if(from)  {
-         fromDate = new Date(from)
-      }
-      if(to)  {
-         toDate = new Date(to)
-      }
-      
-      result.log = result.log.filter(item => {
-        let itemDate = new Date(item.date);
-        return (itemDate.getTime() >= fromDate.getTime() && itemDate.getTime <= toDate.getTime() )
-      })
-    }
-      result = result.toJSON()
-      result['count'] = result.log.length;
-      res.json(result)
-  })
+  if(!req.query.userId)  {
+    res.json({error: "UserId is must"})
+  }
+  else  {
+    User.findById(req.query.userId).then(savedUser => { res.json(savedUser) })
+  }
 })
 // listen for requests :)
 let listener = app.listen(process.env.PORT, () => {
