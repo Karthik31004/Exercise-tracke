@@ -95,7 +95,31 @@ app.get('/api/exercise/log' , (req , res) => {
     res.json({error: "UserId is must"})
   }
   else  {
-    User.findById(req.query.userId).then(savedUser => { res.json(savedUser) })
+    User.findById(req.query.userId , (err , user) => {
+      if(err)  {
+        console.log(err)
+      }
+      
+      let result = {} ,
+          fromDate = 0, toDate = new Date.now() , limit;
+      
+      if(req.query.from || req.query.to || req.query.limit)  {
+        if(req.query.from)  {
+          fromDate = new Date(req.query.from)
+        }
+        if(req.query.to)  {
+          toDate = new Date(req.query.to)
+        }
+        if(req.query.limit)  {
+          limit = req.query.limit
+        }
+      }
+      result['_id'] = user._id ;
+      result['_username'] = user.username;
+      result['log'] = user.log.map(data => {
+        data.date
+      })
+    })
   }
 })
 // listen for requests :)
